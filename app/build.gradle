@@ -21,6 +21,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:32.1.1-jre'
+
+    // dependency used to connect mysql database to our java script
+    implementation "mysql:mysql-connector-java:6.0.6"
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
