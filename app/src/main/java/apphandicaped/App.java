@@ -3,6 +3,8 @@
  */
 package apphandicaped;
 
+import apphandicaped.UI.AWTInterface;
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
@@ -10,6 +12,7 @@ public class App {
 
 
     public static void main(String[] args) {
+        AWTInterface UI = new AWTInterface();
         System.out.println(new App().getGreeting());
     }
 }
