@@ -4,6 +4,7 @@
 package apphandicaped;
 
 import apphandicaped.UI.AWTInterface;
+import apphandicaped.UI.RegisterInterface;
 
 public class App {
     public String getGreeting() {
@@ -12,7 +13,6 @@ public class App {
 
 
     public static void main(String[] args) {
-        AWTInterface UI = new AWTInterface();
-        System.out.println(new App().getGreeting());
+        RegisterInterface.main(null);
     }
 }

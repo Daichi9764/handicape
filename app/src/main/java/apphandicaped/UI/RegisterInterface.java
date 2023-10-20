@@ -7,26 +7,28 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class RegisterInterface extends JPanel {
-   private JTextField FirstNameFIeld;
-   private JTextField LastNameField;
-   private JTextField EmailField;
-   private JPasswordField PasswordField;
-   private JLabel jcomp5;
-   private JLabel jcomp6;
-   private JLabel jcomp7;
-   private JLabel jcomp8;
-   private JLabel jcomp9;
-   private JTextField PasswordVerificationField;
-   private JRadioButton NeedyCheckBox;
-   private JLabel jcomp12;
-   private JRadioButton VolunteerCheckBox;
-   private JRadioButton MedicCheckBox;
-   private JButton registerButton;
+   protected JTextField FirstNameField;
+   protected JTextField LastNameField;
+   protected JTextField EmailField;
+   protected JPasswordField PasswordField;
+   protected JLabel jcomp5;
+   protected JLabel jcomp6;
+   protected JLabel jcomp7;
+   protected JLabel jcomp8;
+   protected JLabel jcomp9;
+   protected JPasswordField PasswordVerificationField;
+   protected JRadioButton NeedyCheckBox;
+   protected JLabel jcomp12;
+   protected JRadioButton VolunteerCheckBox;
+   protected JRadioButton MedicCheckBox;
+   protected JButton registerButton;
+   protected ButtonGroup buttonGroup;
+   private RegisterButtonHandler registerButtonHandler;
 
    public RegisterInterface() {
 
       // construct components
-      FirstNameFIeld = new JTextField(5);
+      FirstNameField = new JTextField(5);
       LastNameField = new JTextField(5);
       EmailField = new JTextField(5);
       PasswordField = new JPasswordField(5);
@@ -35,7 +37,7 @@ public class RegisterInterface extends JPanel {
       jcomp7 = new JLabel("Email");
       jcomp8 = new JLabel("Password");
       jcomp9 = new JLabel("Repeat Password");
-      PasswordVerificationField = new JTextField(5);
+      PasswordVerificationField = new JPasswordField(5);
       NeedyCheckBox = new JRadioButton("I Need Help");
       jcomp12 = new JLabel("Status");
       VolunteerCheckBox = new JRadioButton("I which to volunteer");
@@ -44,8 +46,11 @@ public class RegisterInterface extends JPanel {
       ButtonGroup buttonGroup = new ButtonGroup();
       buttonGroup.add(VolunteerCheckBox); buttonGroup.add(MedicCheckBox);buttonGroup.add(NeedyCheckBox);
 
+      //Create the handler Class
+      registerButtonHandler = new RegisterButtonHandler(registerButton, this);
+
       // set components properties
-      FirstNameFIeld.setToolTipText("First Name");
+      FirstNameField.setToolTipText("First Name");
       LastNameField.setToolTipText("Last Name");
       EmailField.setToolTipText("Email");
       PasswordField.setToolTipText("Password");
@@ -57,7 +62,7 @@ public class RegisterInterface extends JPanel {
       add(registerButton);
 
       // add components
-      add(FirstNameFIeld);
+      add(FirstNameField);
       add(LastNameField);
       add(EmailField);
       add(PasswordField);
@@ -73,7 +78,7 @@ public class RegisterInterface extends JPanel {
       add(MedicCheckBox);
 
       // set component bounds (only needed by Absolute Positioning)
-      FirstNameFIeld.setBounds(165, 115, 100, 25);
+      FirstNameField.setBounds(165, 115, 100, 25);
       LastNameField.setBounds(165, 165, 100, 25);
       EmailField.setBounds(165, 220, 100, 25);
       PasswordField.setBounds(165, 270, 100, 25);
