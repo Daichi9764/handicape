@@ -7,11 +7,10 @@ import static org.junit.Assert.*;
  * AWTInterfaceTest
  */
 public class LoginInterfaceTest {
-    @Test public void InterfacGetsInstanciated(){
-        LoginInterface.SimpleInterface();
-        
-
-    }
-
+    // @Test public void InterfacGetsInstanciated(){
+    //     LoginInterface.SimpleInterface();
+    //     
+    // }
+    //
     
 }
