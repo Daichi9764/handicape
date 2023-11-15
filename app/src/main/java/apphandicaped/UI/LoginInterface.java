@@ -24,8 +24,14 @@ public class LoginInterface {
       loginButton.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent arg0) {
-            System.out.println(mailTextField.getText());
-            System.out.println(passwordTextField.getText());
+            String userText = mailTextField.getText();
+            String pwdText = passwordTextField.getText();
+            if (userText.equalsIgnoreCase("mehtab") && pwdText.equalsIgnoreCase("12345")) {
+                JOptionPane.showMessageDialog(f, "Login Successful");
+            } else {
+                JOptionPane.showMessageDialog(f, "Invalid Username or Password");
+            }
+
          }
       });
 
