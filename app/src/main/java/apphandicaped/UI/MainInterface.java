@@ -7,16 +7,7 @@ import java.awt.event.*;
 
 public class MainInterface {
 
-    public static void changePanel(JFrame f, JPanel destPanel){
-        f.getContentPane().removeAll();
-        f.add(destPanel);
-        //reloaod frame
-        f.invalidate();
-        f.repaint();
-        f.setVisible(true);
-    }
-
-    private static void createAndShowMainGUI() {
+    public static void createAndShowMainGUI() {
         // Create and set up the window.
         MainFrame mframe = new MainFrame();
 
@@ -36,7 +27,7 @@ public class MainInterface {
         bLogin.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                     //switch to Login panel
-                    changePanel(mframe,pLogin);
+                    mframe.changePanel(pLogin);
 
                     }  
                 });  
@@ -44,7 +35,7 @@ public class MainInterface {
         bRegister.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                     //switch to Register panel
-                    changePanel(mframe,pRegister);
+                    mframe.changePanel(pRegister);
                 }  
             }); 
 
