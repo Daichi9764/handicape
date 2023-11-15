@@ -28,14 +28,17 @@ public class InterfaceMySQL {
         ResultSet rs = stm.executeQuery("SELECT * from Users");
         while(rs.next()) {
             System.out.print(rs.getString(1));
+            System.out.print(rs.getString(2));
+            System.out.print(rs.getString(3));
             System.out.println();
         }
 
     }
     public static void addUser(Connection con, User user) throws SQLException{
         
-        String SQLCommand ="INSERT INTO User(FirstName,LastName) VALUES " +  String.format("(%s, %s)", user.getFirstName(), user.getLastName());
+        String SQLCommand ="INSERT INTO Users (FirstName,LastName) VALUES " +  String.format("('%s', '%s')", user.getFirstName(), user.getLastName());
         Statement stm = con.createStatement();
+        System.out.println(SQLCommand);
         stm.executeUpdate(SQLCommand);
 
     }
@@ -47,6 +50,7 @@ public class InterfaceMySQL {
         User user = new User("CR", "7");
         addUser(conn, user);
         displayUserTable(conn);
+        conn.close();
         
         
 
