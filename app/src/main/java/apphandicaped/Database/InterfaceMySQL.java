@@ -2,6 +2,7 @@ package apphandicaped.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import apphandicaped.*;
 
 
 // Notice, do not import com.mysql.cj.jdbc.*
@@ -13,6 +14,7 @@ public class InterfaceMySQL {
     public static Connection Connect() throws SQLException {
         // Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection("jdbc:mysql://srv-bdens.insa-toulouse.fr:3306/projet_gei_022", "projet_gei_022", "iequ6Ais");
+        System.out.println("connection successful");
         Statement stm = conn.createStatement();
         ResultSet rs = stm.executeQuery("Show tables");
         while(rs.next()) {
@@ -21,15 +23,32 @@ public class InterfaceMySQL {
         }
         return conn;   
     }
+    public static void displayUserTable(Connection conn) throws SQLException{
+        Statement stm = conn.createStatement();
+        ResultSet rs = stm.executeQuery("SELECT * from Users");
+        while(rs.next()) {
+            System.out.print(rs.getString(1));
+            System.out.println();
+        }
+
+    }
+    public static void addUser(Connection con, User user) throws SQLException{
+        
+        String SQLCommand ="INSERT INTO User(FirstName,LastName) VALUES " +  String.format("(%s, %s)", user.getFirstName(), user.getLastName());
+        Statement stm = con.createStatement();
+        stm.executeUpdate(SQLCommand);
+
+    }
+    
 
 
     public static void main(String argv[]) throws SQLException{
-        int GlobalID = 0;
-        String SQL = "INSERT INTO User(first_name,last_name) " + "VALUES(?,?)";
-        ArrayList User = new ArrayList<User>();
-        User Test = new User(GlobalID + 1 , "Cristiano", "Ronaldo", "Cr7Corp@gmail.com", "MeilleurQueMessi", "Footballer", new Date(14,11,23), new Date(14,11,23), true);
-    
-        Connection con = Connect();
-        Statement stm = con.createStatement();
+        Connection conn = Connect();
+        User user = new User("CR", "7");
+        addUser(conn, user);
+        displayUserTable(conn);
+        
+        
+
     }
 }
