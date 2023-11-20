@@ -17,6 +17,11 @@ public class User {
         this.FirstName = firstName;
         this.LastName = lastName;
     }
+    public User(String firstName, String lastName, String Password) {
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.UserPassword = Password;
+    }
     
 
     public int getUserID() {
