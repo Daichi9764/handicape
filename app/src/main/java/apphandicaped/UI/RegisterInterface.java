@@ -93,13 +93,15 @@ public class RegisterInterface extends JPanel {
       VolunteerCheckBox.setBounds(165, 395, 145, 25);
       MedicCheckBox.setBounds(165, 420, 155, 25);
       registerButton.setBounds(165, 465, 100, 25);
+
+
    }
 
-   public static void main(String[] args) {
-      JFrame frame = new JFrame("MyPanel");
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      frame.getContentPane().add(new RegisterInterface());
-      frame.pack();
-      frame.setVisible(true);
-   }
+   // public static void main(String[] args) {
+   //    JFrame frame = new JFrame("MyPanel");
+   //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+   //    frame.getContentPane().add(new RegisterInterface());
+   //    frame.pack();
+   //    frame.setVisible(true);
+   // }
 }

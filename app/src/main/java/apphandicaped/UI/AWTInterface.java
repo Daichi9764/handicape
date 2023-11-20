@@ -3,7 +3,7 @@ package apphandicaped.UI;
 import java.awt.*;    
   
 // extending Frame class to our class AWTExample1  
-public class AWTInterface extends Frame {    
+public class AWTInterface extends MainFrame {    
   
    // initializing using constructor  
    public AWTInterface() {  

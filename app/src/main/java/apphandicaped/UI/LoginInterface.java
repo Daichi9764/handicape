@@ -7,7 +7,7 @@ import javax.swing.*;
 
 public class LoginInterface {
    public static void SimpleInterface() {
-      JFrame f = new JFrame();// creating instance of JFrame
+      MainFrame f = new MainFrame();// creating instance of JFrame
                               //
       JTextField mailTextField = new JTextField();
       mailTextField.setBounds(50, 50, 150, 20);
@@ -35,12 +35,8 @@ public class LoginInterface {
          }
       });
 
-      f.setSize(400, 500);// 400 width and 500 height
       f.setLayout(null);// using no layout managers
       f.setVisible(true);// making the frame visible
    }
 
-   public static void main(String[] args) {
-      SimpleInterface();
-   }
 }

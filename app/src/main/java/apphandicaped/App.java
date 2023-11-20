@@ -3,8 +3,7 @@
  */
 package apphandicaped;
 
-import apphandicaped.UI.AWTInterface;
-import apphandicaped.UI.RegisterInterface;
+import apphandicaped.thread.UIThread;
 
 public class App {
     public String getGreeting() {
@@ -13,6 +12,6 @@ public class App {
 
 
     public static void main(String[] args) {
-        RegisterInterface.main(null);
+        
     }
 }
