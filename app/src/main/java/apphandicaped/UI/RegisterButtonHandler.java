@@ -21,7 +21,7 @@ public class RegisterButtonHandler {
 
 
    
-   public RegisterButtonHandler(JButton registerJButton, RegisterInterface originalJPanel) {
+   public RegisterButtonHandler(JButton registerJButton, RegisterPanel originalJPanel) {
       this.registerJButton = registerJButton;
       registerJButton.addActionListener(new ActionListener() {
          @Override

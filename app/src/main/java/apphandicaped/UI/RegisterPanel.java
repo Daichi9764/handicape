@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class RegisterInterface extends JPanel {
+public class RegisterPanel extends JPanel {
    protected JTextField FirstNameField;
    protected JTextField LastNameField;
    protected JTextField EmailField;
@@ -25,7 +25,7 @@ public class RegisterInterface extends JPanel {
    protected ButtonGroup buttonGroup;
    private RegisterButtonHandler registerButtonHandler;
 
-   public RegisterInterface() {
+   public RegisterPanel() {
 
       // construct components
       FirstNameField = new JTextField(5);
@@ -97,11 +97,4 @@ public class RegisterInterface extends JPanel {
 
    }
 
-   // public static void main(String[] args) {
-   //    JFrame frame = new JFrame("MyPanel");
-   //    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   //    frame.getContentPane().add(new RegisterInterface());
-   //    frame.pack();
-   //    frame.setVisible(true);
-   // }
 }

@@ -26,7 +26,7 @@ public class Main {
                 public void run() {
                     MainFrame frame = new MainFrame();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    frame.getContentPane().add(new RegisterInterface());
+                    frame.getContentPane().add(new RegisterPanel());
                     frame.pack();
                     frame.setVisible(true);
 
