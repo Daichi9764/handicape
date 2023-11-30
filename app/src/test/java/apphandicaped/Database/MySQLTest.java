@@ -2,7 +2,10 @@ package apphandicaped.Database;
 
     
     import org.junit.Test;
-    import static org.junit.Assert.*;
+
+import apphandicaped.Database.Request.RequestStatus;
+
+import static org.junit.Assert.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -73,6 +76,7 @@ public class MySQLTest {
         assertEquals(user.getUserPassword(), user_queried.getUserPassword());
 
     }
+
 
 
     // @Test 

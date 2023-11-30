@@ -1,6 +1,6 @@
 package apphandicaped.UI;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -38,10 +38,10 @@ public class RegisterInterface extends JPanel {
       jcomp8 = new JLabel("Password");
       jcomp9 = new JLabel("Repeat Password");
       PasswordVerificationField = new JPasswordField(5);
-      NeedyCheckBox = new JRadioButton("I Need Help");
+      NeedyCheckBox = new JRadioButton("Needy");
       jcomp12 = new JLabel("Status");
-      VolunteerCheckBox = new JRadioButton("I which to volunteer");
-      MedicCheckBox = new JRadioButton("I am a health worker");
+      VolunteerCheckBox = new JRadioButton("Volunteer");
+      MedicCheckBox = new JRadioButton("HealthWorker");
       registerButton = new JButton("Register");
       ButtonGroup buttonGroup = new ButtonGroup();
       buttonGroup.add(VolunteerCheckBox); buttonGroup.add(MedicCheckBox);buttonGroup.add(NeedyCheckBox);

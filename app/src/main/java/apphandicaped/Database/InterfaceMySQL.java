@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.mysql.cj.protocol.Resultset;
 
 import apphandicaped.*;
+import apphandicaped.Database.Request.RequestStatus;
 
 
 // Notice, do not import com.mysql.cj.jdbc.*
@@ -26,6 +27,8 @@ public class InterfaceMySQL {
         }
         return conn;   
     }
+
+
     public static void displayUserTable(Connection conn) throws SQLException{
         Statement stm = conn.createStatement();
         ResultSet rs = stm.executeQuery("SELECT * from Users");
@@ -68,6 +71,9 @@ public class InterfaceMySQL {
         }
         return null;
     }
+
+
+
     public static User getUserByAttributes(Connection con, String FirstName, String LastName) throws SQLException{
         User user ;
         String SQLCommand = "SELECT * FROM Users WHERE " + String.format("LastName = '%s' AND FirstName = '%s'", LastName, FirstName);
@@ -94,6 +100,19 @@ public class InterfaceMySQL {
         }
     }
 
+    public static void addRequest(Connection con , RequestStatus rqst , User Needy) throws SQLException{
+        ArrayList<Integer> NeedyIDs = getUserIDs(con, Needy);
+        int NeedyId = NeedyIDs.get(0);
+        String SQLCommand = "INSERT INTO Requests (OriginID,RequestStatus) VALUES " +  String.format("('%s', '%s')",  String.valueOf(NeedyId), rqst.toString());
+        Statement stm = con.createStatement();
+        System.out.println(SQLCommand);
+        stm.executeUpdate(SQLCommand);
+    }
+
+    /*public static void requestAccepted(Connection conn, User helper, int RequestID){
+        String SQLCommand = ""
+    }*/
+
     public static ArrayList<Integer> getUserIDs(Connection con , User user) throws SQLException {
 
         //a mettre Statement.RETURN_GENERATED_KEYS
@@ -113,6 +132,16 @@ public class InterfaceMySQL {
 
     public static void main(String argv[]) throws SQLException{
         
-
+        Connection conn = InterfaceMySQL.Connect();
+        Request rqst = new Request(RequestStatus.PENDING);
+        System.out.println("Rsqt : " + rqst.Rstatus);
+        User user = new User("Kylian", "Mbappe");
+        int id = InterfaceMySQL.addUser(conn, user);
+    
+        InterfaceMySQL.addRequest(conn, rqst.getRStatus(), user);
+        System.out.println("Request add Done");
+        conn.close();
+    
+        
     }
 }

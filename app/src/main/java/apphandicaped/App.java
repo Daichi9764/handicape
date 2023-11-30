@@ -4,6 +4,7 @@
 package apphandicaped;
 
 import apphandicaped.UI.AWTInterface;
+import apphandicaped.UI.MainInterface;
 import apphandicaped.UI.RegisterInterface;
 
 public class App {
@@ -13,6 +14,6 @@ public class App {
 
 
     public static void main(String[] args) {
-        RegisterInterface.main(null);
+        MainInterface.main(null);
     }
 }

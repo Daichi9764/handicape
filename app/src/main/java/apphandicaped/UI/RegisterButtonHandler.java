@@ -42,7 +42,7 @@ public class RegisterButtonHandler {
                Status=StatusEnum.MEDIC;
             }
 
-               System.out.println("Register info : " + FirstName + LastName+ Email);
+               System.out.println("Register info : " + "Name : " + FirstName + "LastName : " + LastName+  "Mail : " + Email);
                System.out.println("Password : " + Password.toString());
                System.out.println("PasswordVerification : " + PasswordVerification.toString());
                System.out.println("Status : " + Status);

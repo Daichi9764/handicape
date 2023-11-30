@@ -31,7 +31,6 @@ public class LoginInterface {
             } else {
                 JOptionPane.showMessageDialog(f, "Invalid Username or Password");
             }
-
          }
       });
 
