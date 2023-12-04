@@ -4,12 +4,13 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*; 
 
+import apphandicaped.controller.ChangePanelController;
 
-public class MainInterface {
 
-    public static void createAndShowMainGUI() {
-        // Create and set up the window.
-        MainFrame mframe = new MainFrame();
+public class MainPanel {
+
+    public MainPanel() {
+
 
         JPanel pMain = new JPanel(new GridLayout(2,1));
         JPanel pLogin = new JPanel(new BorderLayout());
@@ -40,10 +41,9 @@ public class MainInterface {
             }); 
 
 ;
-        mframe.add(pMain);
+
         pMain.add(bLogin);
         pMain.add(bRegister);
-        mframe.setVisible(true);
 
         
     }
