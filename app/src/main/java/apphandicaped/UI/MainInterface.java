@@ -1,72 +1,88 @@
 package apphandicaped.UI;
 
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*; 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 public class MainInterface {
 
-    public static void changePanel(JFrame f, JPanel destPanel){
-        f.getContentPane().removeAll();
-        f.add(destPanel);
-        //reloaod frame
-        f.invalidate();
-        f.repaint();
+    public static void changePanel(Container container, String panelName) {
+        CardLayout cardLayout = (CardLayout) ((JPanel) container).getLayout();
+        cardLayout.show((JPanel) container, panelName);
     }
 
     private static void createAndShowMainGUI() {
         // Create and set up the window.
-        JFrame frame = new JFrame("main");
 
-        //est ce que je met des pane dans le layeredPane ou c'est juste un seul pane ?
-        JLayeredPane layeredPane = new JLayeredPane();
-
-        JPanel pMain = new JPanel(new GridLayout(2,1));
-        JPanel pLogin = new JPanel(new BorderLayout());
-        JPanel pRegister = new JPanel(new BorderLayout());
-
-        JButton bLogin=new JButton("Login");
-        JButton bRegister=new JButton("Register");
-
-
-
+        JFrame frame = new JFrame("Main");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500,500);
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout());
 
-        //basic panel for login and register
-        //affichage des panels login et register marche mal, il faut maximizer la fenetre pour voir les labels
-        //changePanel fonctionne correctement, et les labels sont corrects
-        JLabel loginLabel = new JLabel("Logging in");
-        JLabel registerLabel = new JLabel("Register proceding");
-        pLogin.add(loginLabel,BorderLayout.CENTER);
-        pRegister.add(registerLabel,BorderLayout.CENTER);
+        // Upper panel
+        JPanel upperPanel = new JPanel();
+        JButton bHome = new JButton("Home");
+        JLabel titleLabel = new JLabel("Welcome to My App");
+        upperPanel.add(titleLabel);
+        upperPanel.add(bHome);
 
-        bLogin.addActionListener(new ActionListener(){  
-            public void actionPerformed(ActionEvent e){  
-                    //switch to Login panel
-                    changePanel(frame,pLogin);
+        // Lower panel
+        JPanel lowerPanel = new JPanel(new CardLayout(2, 1));
 
-                    }  
-                });  
+        JPanel pLogin = LoginInterface.SimpleInterface();
+        pLogin.setLayout(null);
 
-        bRegister.addActionListener(new ActionListener(){  
-            public void actionPerformed(ActionEvent e){  
-                    //switch to Register panel
-                    changePanel(frame,pRegister);
-                }  
-            }); 
+        JPanel pRegister = new RegisterInterface();
+        JPanel firstPanel = new JPanel();
 
+        JButton bLogin = new JButton("Login");
+        JButton bRegister = new JButton("Register");
 
+        // Add panels to the CardLayout
+        // frame.add(frame, "main");
+        // frame.add(pLogin, "login");
+        // frame.add(pRegister, "register");
+        bHome.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                changePanel(lowerPanel, "home");
+            }
+        });
 
+        bLogin.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // switch to Login panel
+                changePanel(lowerPanel, "login");
+            }
+        });
 
-        frame.add(layeredPane);
-        frame.add(pMain);
-        pMain.add(bLogin);
-        pMain.add(bRegister);
+        bRegister.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // switch to Register panel
+                changePanel(lowerPanel, "register");
+            }
+        });
+
+        firstPanel.add(bLogin);
+        firstPanel.add(bRegister);
+
+        // Add panels to the frame
+        frame.add(upperPanel, BorderLayout.NORTH);
+        frame.add(lowerPanel, BorderLayout.CENTER);
+
+        // Add login and register panels to the CardLayout
+        CardLayout cardLayout = (CardLayout) lowerPanel.getLayout();
+        lowerPanel.add(firstPanel, "home");
+        lowerPanel.add(pLogin, "login");
+        lowerPanel.add(pRegister, "register");
+
         frame.setVisible(true);
-
-        
     }
 
     public static void main(String[] args) {

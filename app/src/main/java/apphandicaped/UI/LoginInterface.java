@@ -6,8 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class LoginInterface {
-   public static void SimpleInterface() {
-      JFrame f = new JFrame();// creating instance of JFrame
+   public static JPanel SimpleInterface() {
+      JPanel f = new JPanel();// creating instance of JFrame
                               //
       JTextField mailTextField = new JTextField();
       mailTextField.setBounds(50, 50, 150, 20);
@@ -33,13 +33,20 @@ public class LoginInterface {
             }
          }
       });
+      return f;
 
-      f.setSize(400, 500);// 400 width and 500 height
-      f.setLayout(null);// using no layout managers
-      f.setVisible(true);// making the frame visible
    }
 
    public static void main(String[] args) {
-      SimpleInterface();
+      JFrame frame = new JFrame("Login Interface");
+        JPanel pLogin = SimpleInterface();
+
+        // Using a layout manager (FlowLayout) instead of null layout
+        pLogin.setLayout(null);
+
+        frame.getContentPane().add(pLogin);
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
    }
 }
