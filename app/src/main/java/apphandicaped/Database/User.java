@@ -22,6 +22,10 @@ public class User {
         this.LastName = lastName;
         this.UserPassword = Password;
     }
+    @Override
+    public String toString() {
+        return String.format("%s %s %s pswd : %s ,%s, %s ", FirstName, LastName, UserName, UserPassword, UserMail, UserStatus);
+    }
     
 
     public int getUserID() {

@@ -3,6 +3,7 @@ package apphandicaped.UI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -25,7 +26,7 @@ public class RegisterInterface extends JPanel {
    protected ButtonGroup buttonGroup;
    private RegisterButtonHandler registerButtonHandler;
 
-   public RegisterInterface() {
+   public RegisterInterface() throws SQLException {
 
       // construct components
       FirstNameField = new JTextField(5);
@@ -95,7 +96,7 @@ public class RegisterInterface extends JPanel {
       registerButton.setBounds(165, 465, 100, 25);
    }
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws SQLException {
       JFrame frame = new JFrame("MyPanel");
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.getContentPane().add(new RegisterInterface());

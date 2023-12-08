@@ -6,6 +6,7 @@ import apphandicaped.Database.User;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Arrays;
 
 /**
  * Controller
@@ -13,24 +14,34 @@ import java.sql.*;
 public class Controller implements Closeable {
 
 	Connection conn;
+	User connectedUser;
+	private static Controller instance;
 
-	enum loginResult {
+	public enum loginResult {
 		NotExist,
 		BadPassword,
 		Connected,
 		UnknownSituation
 	}
 
-	enum RegisterResult {
+	public enum RegisterResult {
 		Registered,
 		AlreadyExist,
 		wrongpassword
 	}
 
-	public Controller() throws SQLException {
+	private Controller() throws SQLException {
 		super();
 		this.conn = InterfaceMySQL.Connect();
+		this.connectedUser = null;
+	}
 
+	// Singleton instance creation method
+	public static synchronized Controller getInstance() throws SQLException {
+		if (instance == null) {
+			instance = new Controller();
+		}
+		return instance;
 	}
 
 	@Override
@@ -45,35 +56,39 @@ public class Controller implements Closeable {
 
 	}
 
-	public loginResult CheckTokens(String firstname, String lastname, String password) throws SQLException {
+	public loginResult CheckTokens(String firstname, String lastname, char[] password) throws SQLException {
 		User user = InterfaceMySQL.getUserByAttributes(conn, firstname, lastname);
+		String sPassword = new String(password);
+		System.out.println("User : " + user);
+		System.out.println("given password" + sPassword);
 		if (user == null) {
 			return loginResult.NotExist;
 		}
-		if (user.getUserPassword() != password) {
+		if (!user.getUserPassword().equals(sPassword)) {
 			return loginResult.BadPassword;
 		}
-		if (user.getUserPassword() == password) {
+		if (user.getUserPassword().equals(sPassword)) {
+			connectedUser = user;
 			return loginResult.Connected;
+
 		} else {
 			return loginResult.UnknownSituation;
 		}
 	}
 
-	public RegisterResult Register(String firstname, String lastname, String password, String check_password ) throws SQLException{
-	    
-	    User user = InterfaceMySQL.getUserByAttributes(conn, firstname, lastname);
-	    if (user != null){
-		return RegisterResult.AlreadyExist;
-	    } else {
-		if (password == check_password){
-		InterfaceMySQL.addUser(conn, new User(firstname, lastname, password));
-		return RegisterResult.Registered;
+	public RegisterResult Register(String firstname, String lastname, char[] password, char[] check_password)
+			throws SQLException {
+
+		User user = InterfaceMySQL.getUserByAttributes(conn, firstname, lastname);
+		if (user != null) {
+			return RegisterResult.AlreadyExist;
 		} else {
-		    return RegisterResult.wrongpassword;
+			if (Arrays.equals(password, check_password))  {
+				InterfaceMySQL.addUser(conn, new User(firstname, lastname, new String(password)));
+				return RegisterResult.Registered;
+			} else {
+				return RegisterResult.wrongpassword;
+			}
 		}
-	    }
-
-
 	}
 }
