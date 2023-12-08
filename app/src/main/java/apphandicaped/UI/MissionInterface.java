@@ -9,13 +9,14 @@ import javax.swing.table.TableColumn;
 import apphandicaped.Database.InterfaceMySQL;
 
 import java.awt.*;
+import java.util.Date;  
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -23,8 +24,9 @@ import java.util.Set;
 import java.util.Vector;
 
 public class MissionInterface extends JPanel {
-    private JTable requestsTable;
-   LocalDateTime now = LocalDateTime.now();  
+    private static JTable requestsTable;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
+    Date now = new Date();
     public MissionInterface() {
         String[] columnNames = {"RequestID", "Description", "Date", "State", "Comment", "Help"};
         DefaultTableModel tableModel = new DefaultTableModel(null, columnNames) {
@@ -43,6 +45,7 @@ public class MissionInterface extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(requestsTable);
 
+        requestsTable.setRowHeight(40);
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
 
@@ -65,7 +68,7 @@ public class MissionInterface extends JPanel {
                     Vector<Object> row = new Vector<>();
                     row.add(requestID);
                     row.add("Pas de Description"); // Ajoutez une cellule vide pour la colonne "Description"
-                    row.add(now.toString()); // Ajoutez une cellule vide pour la colonne "Date"
+                    row.add(formatter.format(now)); // Ajoutez une cellule vide pour la colonne "Date"
                     row.add(requestStatus);
                     row.add("Pas de commentaire"); // Ajoutez une cellule vide pour la colonne "Comment"
                     row.add(""); // Ajoutez une cellule vide pour la colonne "Help"
@@ -76,9 +79,11 @@ public class MissionInterface extends JPanel {
             e.printStackTrace();
         }
     }
+    private static boolean tableDisabled = false;
 
     // Classe pour le rendu du bouton
     static class ButtonRenderer extends DefaultTableCellRenderer {
+        
         private JButton button;
 
         public ButtonRenderer() {
@@ -94,10 +99,8 @@ public class MissionInterface extends JPanel {
 // Classe pour l'édition du bouton
 static class ButtonEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
     private JButton button;
+    private boolean clicked;
     private JTable table;
-
-    // Utilisez un ensemble pour stocker les indices des lignes avec des boutons déjà cliqués
-    private Set<Integer> clickedRows = new HashSet<>();
 
     public ButtonEditor(JCheckBox checkBox) {
         button = new JButton("Help");
@@ -107,32 +110,31 @@ static class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
 
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         this.table = table;
-        // Vérifiez si le bouton a déjà été cliqué pour cette ligne
-        if (clickedRows.contains(row)) {
-            button.setEnabled(false);  // Si déjà cliqué, désactivez le bouton
-        } else {
-            button.setEnabled(true);   // Sinon, activez le bouton
-        }
+        clicked = false;
         return button;
     }
 
     public Object getCellEditorValue() {
-        return "Proceeding"; // Peu importe la valeur retournée, car le bouton est désactivé après le clic
+        return clicked ? "Proceeding" : "Help";
     }
 
     public void actionPerformed(ActionEvent e) {
         int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1 && !clickedRows.contains(selectedRow)) {
+        if (selectedRow != -1 && !clicked) {
             // Modifiez le texte de la cellule lorsqu'on clique sur le bouton
-            table.setValueAt("Proceeding", selectedRow, 5);
-            // Ajoutez l'indice de la ligne à l'ensemble des lignes cliquées
-            clickedRows.add(selectedRow);
+            clicked = true;
+            button.setText("Proceeding");
             button.setEnabled(false);  // Désactivez le bouton après le clic
+            fireEditingStopped();
+            disableHelpColumn();    // Désactivez la JTable
         }
-        fireEditingStopped();
+        button.setEnabled(false);
     }
 }
-
+private static void disableHelpColumn() {
+    // Supprimez l'éditeur de la cellule de la colonne "Help"
+    requestsTable.getColumnModel().getColumn(5).setCellEditor(null);
+}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -142,7 +144,7 @@ static class ButtonEditor extends AbstractCellEditor implements TableCellEditor,
             MissionInterface missionInterface = new MissionInterface();
             frame.add(missionInterface);
 
-            frame.setSize(700, 400);
+            frame.setSize(1400, 800);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
