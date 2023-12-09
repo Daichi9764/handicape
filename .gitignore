@@ -6,7 +6,7 @@ app/build
 app/bin
 Share.txt
 .settings
-*.*
+
 # Created by https://www.gitignore.io/api/java,gradle
 
 ### Java ###
