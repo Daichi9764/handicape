@@ -23,11 +23,9 @@ public class MissionInterface extends JPanel {
     private static JTable requestsTable;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date now = new Date();
-    private int CurrentHelperID;
     private Timer timer;
 
-    public MissionInterface(int CurrentHelperID) {
-        this.CurrentHelperID = CurrentHelperID;
+    public MissionInterface() {
 
         String[] columnNames = {"RequestID", "Description", "Date", "State", "Comment"};
         DefaultTableModel tableModel = new DefaultTableModel(null, columnNames) {
@@ -82,14 +80,14 @@ public class MissionInterface extends JPanel {
             Object comment = requestsTable.getValueAt(row, 4); // Colonne de commentaire
     
             int choice = JOptionPane.showConfirmDialog(this,
-                    "Voulez-vous accepter la mission avec l'ID de requête: " + requestID + "\n"
+                    "Voulez-vous Valider la mission avec l'ID de requête: " + requestID + "\n"
                             + "Description: " + description + "\n"
                             + "Commentaire: " + comment,
                     "Confirmation d'acceptation de mission",
                     JOptionPane.YES_NO_OPTION);
     
             if (choice == JOptionPane.YES_OPTION) {
-                InterfaceMySQL.requestAccepted(CurrentHelperID,((Integer) requestID).intValue());
+                InterfaceMySQL.requestAcceptedbyWorker(((Integer) requestID).intValue());
             }
             else{
                 Commentaire.main(null, ((Integer) requestID).intValue());
@@ -140,7 +138,7 @@ public class MissionInterface extends JPanel {
             JFrame frame = new JFrame("Mission Interface");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-            MissionInterface missionInterface = new MissionInterface(10);
+            MissionInterface missionInterface = new MissionInterface();
             frame.add(missionInterface);
 
             frame.setSize(800, 600);
