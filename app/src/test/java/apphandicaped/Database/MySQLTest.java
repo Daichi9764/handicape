@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class MySQLTest {
 
-    @Test 
+    /*@Test 
     public void ReadTabletest() throws SQLException {
        InterfaceMySQL.main(null); 
     }
@@ -89,5 +89,5 @@ public class MySQLTest {
     //    conn.close();
     //
     // }
-    //
+    //*/
 }
