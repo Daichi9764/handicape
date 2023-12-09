@@ -24,6 +24,7 @@ public class MissionInterface extends JPanel {
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date now = new Date();
     private Timer timer;
+    JLabel messageLabel = new JLabel("Double-cliquez sur la case ID de la mission pour l'accepter");
 
     public MissionInterface() {
 
@@ -42,7 +43,7 @@ public class MissionInterface extends JPanel {
         requestsTable.setRowHeight(40);
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
-
+        add(messageLabel, BorderLayout.SOUTH);
         // Chargez les données depuis la base de données
         loadTableData();
 
