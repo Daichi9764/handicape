@@ -5,7 +5,7 @@ import apphandicaped.Database.Request.RequestStatus;
 
 public class Request {
     public enum RequestStatus {
-        PENDING, INPROGRESS, COMPLETED, REJECTED
+        PENDING, INPROGRESS, COMPLETED, REJECTED, 
     }
 
     public RequestStatus Rstatus;

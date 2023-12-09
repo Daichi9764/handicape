@@ -2,6 +2,7 @@ package apphandicaped.controller;
 
 import apphandicaped.Database.InterfaceMySQL;
 import apphandicaped.Database.User;
+import apphandicaped.UI.RegisterButtonHandler;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -76,7 +77,7 @@ public class Controller implements Closeable {
 		}
 	}
 
-	public RegisterResult Register(String firstname, String lastname, char[] password, char[] check_password)
+	public RegisterResult Register(String firstname, String lastname, char[] password, char[] check_password, String UserMail,String UserStatus)
 			throws SQLException {
 
 		User user = InterfaceMySQL.getUserByAttributes(conn, firstname, lastname);
@@ -84,7 +85,7 @@ public class Controller implements Closeable {
 			return RegisterResult.AlreadyExist;
 		} else {
 			if (Arrays.equals(password, check_password))  {
-				InterfaceMySQL.addUser(conn, new User(firstname, lastname, new String(password)));
+				InterfaceMySQL.addUser(conn, new User(firstname, lastname, new String(password),UserMail,UserStatus));
 				return RegisterResult.Registered;
 			} else {
 				return RegisterResult.wrongpassword;

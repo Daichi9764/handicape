@@ -42,7 +42,7 @@ public class InterfaceMySQL {
     }
     public static int addUser(Connection con, User user) throws SQLException{
         
-        String SQLCommand ="INSERT INTO Users (FirstName,LastName,UserPassword) VALUES " +  String.format("('%s', '%s', '%s')", user.getFirstName(), user.getLastName(), user.getUserPassword());
+        String SQLCommand ="INSERT INTO Users (FirstName,LastName,UserMail,UserPassword,UserStatus,UserCreationDate,Connected) VALUES " +  String.format("('%s','%s','%s','%s','%s','%s','%s')", user.getFirstName(), user.getLastName(), user.getUserMail(), user.getUserPassword(), user.getUserStatus(),user.getUserCreateDate(),String.valueOf(0));
         Statement stm = con.createStatement();
         System.out.println(SQLCommand);
         stm.executeUpdate(SQLCommand);
@@ -56,8 +56,9 @@ public class InterfaceMySQL {
 
     }
 
-    public static User getUserByID(Connection con, int id) throws SQLException{
+    public static User getUserByID(int id) throws SQLException{
         User user ;
+        Connection con = Connect();
         String SQLCommand = "SELECT FirstName,LastName,UserPassword FROM Users WHERE " + String.format("UserID = %d", id);
         Statement stm = con.prepareStatement(SQLCommand,Statement.RETURN_GENERATED_KEYS);
         System.out.println(SQLCommand);
@@ -69,10 +70,21 @@ public class InterfaceMySQL {
             user = new User(rs.getString(1), rs.getString(2), rs.getString(3));
             return user;
         }
+        con.close();
         return null;
     }
 
-
+    public static String getStatusbyname(String FirstName) throws SQLException{
+        Connection conn = Connect();
+        String SQLCommand = "SELECT * FROM Users WHERE " + String.format("FirstName = '%s'", FirstName);
+        Statement stm = conn.prepareStatement(SQLCommand);
+        ResultSet rs = stm.executeQuery(SQLCommand);
+        if(rs.next()){
+            return rs.getString("UserStatus");
+        }
+        conn.close();
+        return null;
+    }   
 
     public static User getUserByAttributes(Connection con, String FirstName, String LastName) throws SQLException{
         User user ;
@@ -100,21 +112,58 @@ public class InterfaceMySQL {
         }
     }
 
-    public static void addRequest(Connection con , RequestStatus rqst , User Needy) throws SQLException{
-        ArrayList<Integer> NeedyIDs = getUserIDs(con, Needy);
-        int NeedyId = NeedyIDs.get(0);
-        String SQLCommand = "INSERT INTO Requests (OriginID,RequestStatus) VALUES " +  String.format("('%s', '%s')",  String.valueOf(NeedyId), rqst.toString());
+    public static void addRequest(RequestStatus rqst , int NeedyId, String description) throws SQLException{
+        Connection con = Connect();
+        long millis=System.currentTimeMillis();  
+        java.sql.Date now = new java.sql.Date(millis);
+        String SQLCommand = "INSERT INTO Requests (OriginID,RequestStatus,Description,RequestDate) VALUES " +  String.format("('%s', '%s','%s','%s')",  String.valueOf(NeedyId), rqst.toString(),description,now.toString());
         Statement stm = con.createStatement();
         System.out.println(SQLCommand);
         stm.executeUpdate(SQLCommand);
+        con.close();
     }
 
-    /*public static void requestAccepted(Connection conn, User helper, int RequestID){
-        String SQLCommand = ""
-    }*/
+    public static void requestAcceptedbyWorker(int RequestID) throws SQLException{
+        Connection conn = Connect();
+        String SQLCommand = "UPDATE Requests SET RequestStatus = 'INPROGRESS' WHERE RequestsID = " + String.valueOf(RequestID);
+        System.out.println(SQLCommand);
+        Statement stm = conn.createStatement();
+        stm.executeUpdate(SQLCommand);
+        System.out.println("Mission acceptee");
+        conn.close();
+    }
 
-    public static ArrayList<Integer> getUserIDs(Connection con , User user) throws SQLException {
+    public static void requestAcceptedbyVolunteer(int HelperID, int RequestID) throws SQLException{
+        Connection conn = Connect();
+        String SQLCommand = "UPDATE Requests SET DestinationID = " + String.valueOf(HelperID) + ", RequestStatus = 'ACCEPTED' WHERE RequestsID = " + String.valueOf(RequestID);
+        System.out.println(SQLCommand);
+        Statement stm = conn.createStatement();
+        stm.executeUpdate(SQLCommand);
+        System.out.println("Mission acceptee");
+        conn.close();
+    }
 
+    public static void requestFinished(int RequestID) throws SQLException{
+        Connection conn = Connect();
+        String SQLCommand = "UPDATE Requests SET RequestStatus = 'COMPLETED' WHERE RequestsID = " + String.valueOf(RequestID);
+        System.out.println(SQLCommand);
+        Statement stm = conn.createStatement();
+        stm.executeUpdate(SQLCommand);
+        conn.close();
+    }
+
+    public static void addCommentaire(int RequestID,String commentaire) throws SQLException{
+        Connection conn = Connect();
+        String SQLCommand = "UPDATE Requests SET Commentaire = " + String.format("'%s'",commentaire) + ", RequestStatus = 'REJECTED' WHERE RequestsID = " + String.valueOf(RequestID);
+        System.out.println(SQLCommand);
+        Statement stm = conn.createStatement();
+        stm.executeUpdate(SQLCommand);
+        System.out.println("Mission emis");
+        conn.close();
+    }
+
+    public static ArrayList<Integer> getUserIDs(User user) throws SQLException {
+        Connection con = Connect(); 
         //a mettre Statement.RETURN_GENERATED_KEYS
         ArrayList<Integer> IDs = new ArrayList<Integer>(0);
         String SQLCommand = "SELECT UserID FROM Users WHERE " + String.format("LastName = '%s' AND FirstName = '%s'", user.getLastName(), user.getFirstName());
@@ -125,6 +174,7 @@ public class InterfaceMySQL {
         while (rs.next()){
             IDs.add(rs.getInt(1));
         }
+        con.close();
         return IDs;
     }
     
@@ -138,7 +188,6 @@ public class InterfaceMySQL {
         User user = new User("Kylian", "Mbappe");
         int id = InterfaceMySQL.addUser(conn, user);
     
-        InterfaceMySQL.addRequest(conn, rqst.getRStatus(), user);
         System.out.println("Request add Done");
         conn.close();
     

@@ -46,7 +46,7 @@ public class MySQLTest {
         InterfaceMySQL.addUser(conn, user);
         InterfaceMySQL.displayUserTable(conn);
 
-        ArrayList<Integer> IDs = InterfaceMySQL.getUserIDs(conn ,user);
+        ArrayList<Integer> IDs = InterfaceMySQL.getUserIDs(user);
         System.out.println("ids : " + IDs);
 
         conn.close();
@@ -69,7 +69,7 @@ public class MySQLTest {
         User user = new User("momo", "ait", "1234");
         int id = InterfaceMySQL.addUser(conn, user);
 
-        User user_queried = InterfaceMySQL.getUserByID(conn, id);
+        User user_queried = InterfaceMySQL.getUserByID(id);
         conn.close();
         assertEquals(user.getLastName(), user_queried.getLastName());
         assertEquals(user.getFirstName(), user_queried.getFirstName());

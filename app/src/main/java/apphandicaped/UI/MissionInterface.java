@@ -123,7 +123,8 @@ public class MissionInterface extends JPanel {
                         row.add(Description);
                         row.add(RequestDate);
                         row.add(requestStatus);
-                        row.add(Commentaire);
+                        if(requestStatus.equals("INPROGRESS")) row.add("Requete Valide");
+                        else row.add(Commentaire);
                         model.addRow(row);
                     }
                 }
@@ -135,7 +136,7 @@ public class MissionInterface extends JPanel {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Mission Interface");
+            JFrame frame = new JFrame("Worker Interface");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             MissionInterface missionInterface = new MissionInterface();

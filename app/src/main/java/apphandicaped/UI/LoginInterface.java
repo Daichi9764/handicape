@@ -3,13 +3,20 @@ package apphandicaped.UI;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import apphandicaped.Database.InterfaceMySQL;
+import apphandicaped.Database.User;
 import apphandicaped.controller.*;
 
 import javax.swing.*;
 
+
+
 public class LoginInterface extends JPanel {
+
    static LoginInterface instance;
+   
 
    public static synchronized LoginInterface getInstance() {
       if (instance == null) {
@@ -21,12 +28,30 @@ public class LoginInterface extends JPanel {
    public LoginInterface() {
 
       //
+
       JTextField firstnameTextField = new JTextField();
       firstnameTextField.setBounds(50, 50, 150, 20);
       JTextField lastnameTextField = new JTextField();
       lastnameTextField.setBounds(50, 100, 150, 20);
       JPasswordField passwordTextField = new JPasswordField();
       passwordTextField.setBounds(50, 150, 150, 20);
+
+
+      //
+      JLabel firstNameLabel = new JLabel("First Name:");
+      firstNameLabel.setBounds(50, 30, 150, 20);
+  
+      JLabel lastNameLabel = new JLabel("Last Name:");
+      lastNameLabel.setBounds(50, 80, 150, 20);
+  
+      JLabel passwordLabel = new JLabel("Password:");
+      passwordLabel.setBounds(50, 130, 150, 20);
+  
+  
+      this.add(firstNameLabel);
+      this.add(lastNameLabel);
+      this.add(passwordLabel);
+      //
 
       JButton loginButton = new JButton("Login");// creating instance of JButton
       loginButton.setBounds(130, 200, 150, 40);// x axis, y axis, width, height
@@ -54,9 +79,14 @@ public class LoginInterface extends JPanel {
                         JOptionPane.showMessageDialog(interface1, "User does not exist");
                         break;
                      case Connected:
-                        JOptionPane.showMessageDialog(interface1, "Connection Successful");
-                        MIC.changeLowerPanel("missionInterface");
-
+                        //JOptionPane.showMessageDialog(interface1, "Connection Successful");
+                        String Status = InterfaceMySQL.getStatusbyname(firstnameText);
+                        User user = new User(firstnameText, lastnameText);
+                        ArrayList<Integer> UserIds = InterfaceMySQL.getUserIDs(user);
+                        int UserId = UserIds.get(0);
+                        if (Status.equals("NEEDY")){NeedyInterface.main(null,UserId);}
+                        else if (Status.equals("HELPER")){HelperInterface.main(null,UserId);}
+                        else if (Status.equals("MEDIC")){MissionInterface.main(null);}
                         break;
                      case BadPassword:
                         JOptionPane.showMessageDialog(interface1, "Wrong Password");
@@ -65,6 +95,7 @@ public class LoginInterface extends JPanel {
                      default:
                         break;
                   }
+                  
                } catch (Exception e) {
                   JOptionPane.showMessageDialog(interface1, "Problem connecting to the database, please restart the app");
                   e.printStackTrace();
@@ -88,7 +119,7 @@ public class LoginInterface extends JPanel {
 
       frame.getContentPane().add(pLogin);
       frame.setSize(400, 300);
-      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
       frame.setVisible(true);
 
       // Using a layout manager (FlowLayout) instead of null layout

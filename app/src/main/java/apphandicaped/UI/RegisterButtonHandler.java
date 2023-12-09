@@ -48,7 +48,7 @@ public class RegisterButtonHandler {
                Status=StatusEnum.MEDIC;
             }
             try {
-            Controller.RegisterResult rResult = controller.Register(FirstName, LastName, Password, PasswordVerification);
+            Controller.RegisterResult rResult = controller.Register(FirstName, LastName, Password, PasswordVerification, Email, Status.toString());
             switch (rResult) {
                case Registered:
                JOptionPane.showInternalMessageDialog(MIC.frame, "Register succesful, please login to access our services");

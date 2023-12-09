@@ -58,7 +58,7 @@ public class RegisterInterface extends JPanel {
       PasswordVerificationField.setToolTipText("Repeat Password");
 
       // adjust size and set layout
-      setPreferredSize(new Dimension(450, 602));
+      setPreferredSize(new Dimension(450, 800));
       setLayout(null);
       add(registerButton);
 

@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,12 +19,12 @@ public class MainInterface {
         cardLayout.show((JPanel) container, panelName);
     }
 
-    private static void createAndShowMainGUI() {
+    private static void createAndShowMainGUI() throws SQLException {
         // Create and set up the window.
 
         JFrame frame = new JFrame("Main");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
         // Upper panel
@@ -36,7 +37,7 @@ public class MainInterface {
         // Lower panel
         JPanel lowerPanel = new JPanel(new CardLayout(2, 1));
 
-        JPanel pLogin = LoginInterface.SimpleInterface();
+        JPanel pLogin = new LoginInterface();
         pLogin.setLayout(null);
 
         JPanel pRegister = new RegisterInterface();
@@ -90,7 +91,12 @@ public class MainInterface {
         // creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowMainGUI();
+                try {
+                    createAndShowMainGUI();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
     }
