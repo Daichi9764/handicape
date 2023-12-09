@@ -91,6 +91,9 @@ public class MissionInterface extends JPanel {
             if (choice == JOptionPane.YES_OPTION) {
                 InterfaceMySQL.requestAccepted(CurrentHelperID,((Integer) requestID).intValue());
             }
+            else{
+                Commentaire.main(null, ((Integer) requestID).intValue());
+            }
         }
     }
 
@@ -102,25 +105,29 @@ public class MissionInterface extends JPanel {
         loadTableData();
     }
 
-    private void loadTableData() {
+    public void loadTableData() {
         try {
             Connection connection = InterfaceMySQL.Connect();
-            String query = "SELECT RequestsID, RequestStatus FROM Requests";
+            String query = "SELECT RequestsID, RequestStatus,RequestDate,Description,Commentaire FROM Requests";
             try (PreparedStatement statement = connection.prepareStatement(query);
                  ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet.next()) {
                     int requestID = resultSet.getInt("RequestsID");
                     String requestStatus = resultSet.getString("RequestStatus");
-
-                    DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
-                    Vector<Object> row = new Vector<>();
-                    row.add(requestID);
-                    row.add("Pas de Description");
-                    row.add(formatter.format(now));
-                    row.add(requestStatus);
-                    row.add("Pas de commentaire");
-                    model.addRow(row);
+                    Date RequestDate = resultSet.getDate("RequestDate");
+                    String Description = resultSet.getString("Description");
+                    String Commentaire = resultSet.getString("Commentaire");
+                    if(requestStatus.equals("PENDING") || requestStatus.equals("REJECTED")){
+                        DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
+                        Vector<Object> row = new Vector<>();
+                        row.add(requestID);
+                        row.add(Description);
+                        row.add(RequestDate);
+                        row.add(requestStatus);
+                        row.add(Commentaire);
+                        model.addRow(row);
+                    }
                 }
             }
         } catch (SQLException e) {
