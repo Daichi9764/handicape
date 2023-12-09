@@ -87,6 +87,8 @@ public class LoginInterface extends JPanel {
                         if (Status.equals("NEEDY")){NeedyInterface.main(null,UserId);}
                         else if (Status.equals("HELPER")){HelperInterface.main(null,UserId);}
                         else if (Status.equals("MEDIC")){MissionInterface.main(null);}
+
+                        SwingUtilities.getWindowAncestor(loginButton).setVisible(false);
                         break;
                      case BadPassword:
                         JOptionPane.showMessageDialog(interface1, "Wrong Password");
