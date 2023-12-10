@@ -42,7 +42,7 @@ public class InterfaceMySQL {
     }
     public static int addUser(Connection con, User user) throws SQLException{
         
-        String SQLCommand ="INSERT INTO Users (FirstName,LastName,UserMail,UserPassword,UserStatus,UserCreationDate,Connected) VALUES " +  String.format("('%s','%s','%s','%s','%s','%s','%s')", user.getFirstName(), user.getLastName(), user.getUserMail(), user.getUserPassword(), user.getUserStatus(),user.getUserCreateDate(),String.valueOf(0));
+        String SQLCommand ="INSERT INTO Users (FirstName,LastName,UserMail,UserPassword,UserStatus,UserCreationDate) VALUES " +  String.format("('%s','%s','%s','%s','%s','%s')", user.getFirstName(), user.getLastName(), user.getUserMail(), user.getUserPassword(), user.getUserStatus(),user.getUserCreateDate());
         Statement stm = con.createStatement();
         System.out.println(SQLCommand);
         stm.executeUpdate(SQLCommand);
