@@ -6,6 +6,8 @@ package apphandicaped.Database;
 import apphandicaped.Database.Request.RequestStatus;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.After;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -15,79 +17,66 @@ import java.util.ArrayList;
  */
 public class MySQLTest {
 
-    /*@Test 
-    public void ReadTabletest() throws SQLException {
-       InterfaceMySQL.main(null); 
+private Connection connection;
+
+    @Before
+    public void setUp() throws SQLException {
+        connection = InterfaceMySQL.Connect();
     }
-    @Test 
-    public void BigBetise() throws SQLException {
-       InterfaceMySQL.main(null); 
-       Connection conn = InterfaceMySQL.Connect();
-       User user = new User(null, "messi");
-       InterfaceMySQL.addUser(conn, user);
 
-       conn.close();
-
+    @After
+    public void tearDown() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
     }
-    @Test 
-    public void AutreBestise() throws SQLException {
-       InterfaceMySQL.main(null); 
-       Connection conn = InterfaceMySQL.Connect();
-       User user = new User("NULL", "messi");
-       InterfaceMySQL.addUser(conn, user);
 
-       conn.close();
-
-    }
     @Test
-    public void getIDs() throws SQLException{
-        Connection conn = InterfaceMySQL.Connect();
-        User user = new User("CR", "7");
-        InterfaceMySQL.addUser(conn, user);
-        InterfaceMySQL.displayUserTable(conn);
-
-        ArrayList<Integer> IDs = InterfaceMySQL.getUserIDs(user);
-        System.out.println("ids : " + IDs);
-
-        conn.close();
-
+    public void testAddUser() throws SQLException {
+        User user = new User("Momo", "Ait");
+        int userId = InterfaceMySQL.addUser(connection, user);
+        assertTrue(userId > 0);
     }
+
     @Test
-    public void delUser() throws SQLException{
-        Connection conn = InterfaceMySQL.Connect();
+    public void testGetUserByID() throws SQLException {
+        User user = new User("Momo", "Ait");
+        int userId = InterfaceMySQL.addUser(connection, user);
 
-        InterfaceMySQL.delUser(conn, 150);
-        InterfaceMySQL.delUser(conn, 82);
-
-        InterfaceMySQL.displayUserTable(conn);
-        conn.close();
-
+        User retrievedUser = InterfaceMySQL.getUserByID(userId);
+        assertNotNull(retrievedUser);
+        assertEquals(user.getFirstName(), retrievedUser.getFirstName());
+        assertEquals(user.getLastName(), retrievedUser.getLastName());
     }
+
     @Test
-    public void getUser() throws SQLException{
-        Connection conn = InterfaceMySQL.Connect();
-        User user = new User("momo", "ait", "1234");
-        int id = InterfaceMySQL.addUser(conn, user);
+    public void testGetStatusByName() throws SQLException {
+        User user = new User("Momo", "Ait");
+        InterfaceMySQL.addUser(connection, user);
 
-        User user_queried = InterfaceMySQL.getUserByID(id);
-        conn.close();
-        assertEquals(user.getLastName(), user_queried.getLastName());
-        assertEquals(user.getFirstName(), user_queried.getFirstName());
-        assertEquals(user.getUserPassword(), user_queried.getUserPassword());
-
+        String status = InterfaceMySQL.getStatusbyname("Momo");
+        assertNotNull(status);
     }
 
+    @Test
+    public void testGetUserByAttributes() throws SQLException {
+        User user = new User("Momo", "Ait");
+        InterfaceMySQL.addUser(connection, user);
 
+        User retrievedUser = InterfaceMySQL.getUserByAttributes(connection, "Momo", "Ait");
+        assertNotNull(retrievedUser);
+        assertEquals(user.getFirstName(), retrievedUser.getFirstName());
+        assertEquals(user.getLastName(), retrievedUser.getLastName());
+    }
 
-    // @Test 
-    // public void Injection() throws SQLException {
-    //    InterfaceMySQL.main(null); 
-    //    Connection conn = InterfaceMySQL.Connect();
-    //    User user = new User("NULL", "messi; SELECT * FROM projet_gei_022.Users");
-    //    InterfaceMySQL.addUser(conn, user);
-    //
-    //    conn.close();
-    //
-    // }
-    //*/
+    @Test
+    public void testDelUser() throws SQLException {
+        User user = new User("Momo", "Ait");
+        int userId = InterfaceMySQL.addUser(connection, user);
+
+        InterfaceMySQL.delUser(connection, userId);
+        User retrievedUser = InterfaceMySQL.getUserByID(userId);
+        assertNull(retrievedUser);
+   }
+
 }

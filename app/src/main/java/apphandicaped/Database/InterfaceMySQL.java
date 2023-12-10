@@ -88,12 +88,13 @@ public class InterfaceMySQL {
 
     public static User getUserByAttributes(Connection con, String FirstName, String LastName) throws SQLException{
         User user ;
-        String SQLCommand = "SELECT * FROM Users WHERE " + String.format("LastName = '%s' AND FirstName = '%s'", LastName, FirstName);
+        String SQLCommand = "SELECT * FROM Users WHERE " + String.format("BINARY LastName = '%s' AND BINARY FirstName = '%s'", LastName, FirstName);
         Statement stm = con.prepareStatement(SQLCommand,Statement.RETURN_GENERATED_KEYS);
         System.out.println(SQLCommand);
         ResultSet rs = stm.executeQuery(SQLCommand);
         if (rs.next()){
             user = new User(rs.getString(2), rs.getString(3), rs.getString(5));
+            System.out.println(user);
             return user;
         }
         return null;

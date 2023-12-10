@@ -20,11 +20,20 @@ public class User {
     public User(String firstName, String lastName) {
         this.FirstName = firstName;
         this.LastName = lastName;
+        this.UserPassword = "";
+        this.UserMail = "";
+        this.UserStatus = "";
+        long millis=System.currentTimeMillis(); 
+        this.UserCreateDate = new java.sql.Date(millis); 
     }
     public User(String firstName, String lastName, String Password) {
         this.FirstName = firstName;
         this.LastName = lastName;
         this.UserPassword = Password;
+        this.UserMail = "";
+        this.UserStatus = "";
+        long millis=System.currentTimeMillis(); 
+        this.UserCreateDate = new java.sql.Date(millis); 
     }
     public User(String FirstName, String LastName, String UserPassword,String UserMail,String UserStatus){
         this.FirstName = FirstName;
