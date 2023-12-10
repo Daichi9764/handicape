@@ -61,6 +61,14 @@ public class LoginInterface extends JPanel {
       this.add(passwordTextField);
       this.add(loginButton);
 
+      passwordTextField.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+                         // Déclenchez l'action du bouton "Login" lorsque la touche "Entrée" est pressée
+            loginButton.doClick();
+          }
+       });
+
       try {
          Controller controller = Controller.getInstance();
 
@@ -72,6 +80,7 @@ public class LoginInterface extends JPanel {
                String firstnameText = firstnameTextField.getText();
                String lastnameText = lastnameTextField.getText();
                char[] pwdText = passwordTextField.getPassword();
+               
                try {
                   Controller.loginResult result = controller.CheckTokens(firstnameText, lastnameText, pwdText);
                   switch (result) {

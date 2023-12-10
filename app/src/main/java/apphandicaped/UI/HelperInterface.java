@@ -25,7 +25,7 @@ public class HelperInterface extends JPanel {
     Date now = new Date();
     private int CurrentHelperID;
     private Timer timer;
-    JLabel messageLabel = new JLabel("Double-cliquez sur la case ID de la mission pour l'accepter");
+    JLabel messageLabel = new JLabel("Double-cliquez sur la case ID de la mission pour terminer la tache");
 
     public HelperInterface(int CurrentHelperID) {
         this.CurrentHelperID = CurrentHelperID;
@@ -44,9 +44,41 @@ public class HelperInterface extends JPanel {
 
         requestsTable.setRowHeight(40);
         setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-        add(messageLabel, BorderLayout.SOUTH);
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+        centerPanel.add(messageLabel, BorderLayout.SOUTH);
+
+        // Ajouter le panneau au centre (CENTER) du BorderLayout
+        add(centerPanel, BorderLayout.CENTER);
         // Chargez les données depuis la base de données
+        JPanel disconnectPanel = new JPanel();
+        disconnectPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Aligner le bouton à droite
+
+        JButton disconnectButton = new JButton("Disconnect");
+        disconnectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.getWindowAncestor(disconnectButton).setVisible(false);
+                MainInterface.main(null);
+                
+            }
+        });;
+
+        JButton myMissionsButton = new JButton("Mes Missions");
+        myMissionsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MesMissions.main(null, CurrentHelperID);
+            }
+        });
+
+        add(myMissionsButton, BorderLayout.SOUTH);
+        disconnectPanel.add(disconnectButton);
+        disconnectPanel.add(myMissionsButton);
+        // Ajouter le panneau à la partie inférieure (SOUTH) du BorderLayout
+        add(disconnectPanel, BorderLayout.SOUTH);
+
         loadTableData();
 
         // Ajoutez un écouteur de clic à la table
@@ -56,9 +88,12 @@ public class HelperInterface extends JPanel {
                 int row = requestsTable.rowAtPoint(e.getPoint());
                 int col = requestsTable.columnAtPoint(e.getPoint());
                 if (row >= 0 && col >= 0) {
+                    // Récupérez la valeur de la colonne RequestID
+                    Object requestID = requestsTable.getValueAt(row, 0);
+        
                     // Affichez une popup pour la cellule sélectionnée
                     try {
-                        showPopup(row, col);
+                        showPopup(row, col, requestID);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -76,39 +111,37 @@ public class HelperInterface extends JPanel {
         timer.start();
     }
 
-    private void showPopup(int row, int col) throws SQLException {
+    private void showPopup(int row, int col, Object requestID) throws SQLException {
+        // Utilisez la valeur de la colonne RequestID dans votre logique
         if (col == 0) { // Vérifiez si la colonne est celle des IDs de requête
-            Object requestID = requestsTable.getValueAt(row, col);
             Object description = requestsTable.getValueAt(row, 1); // Colonne de description
             Object comment = requestsTable.getValueAt(row, 4); // Colonne de commentaire
             Object RequestStatus = requestsTable.getValueAt(row, 3);
             System.out.println("----------------> " + RequestStatus);
-            if(RequestStatus.equals("INPROGRESS")){
+            if (RequestStatus.equals("INPROGRESS")) {
                 int choice = JOptionPane.showConfirmDialog(this,
                         "Voulez-vous accpeter la mission avec l'ID de requête: " + requestID + "\n"
                                 + "Description: " + description + "\n"
                                 + "Commentaire: " + comment,
                         "Confirmation d'acceptation de mission",
                         JOptionPane.YES_NO_OPTION);
-        
+    
                 if (choice == JOptionPane.YES_OPTION) {
-                    InterfaceMySQL.requestAcceptedbyVolunteer(CurrentHelperID,((Integer) requestID).intValue());
+                    InterfaceMySQL.requestAcceptedbyVolunteer(CurrentHelperID, ((Integer) requestID).intValue());
                 }
-            }
-            else if(RequestStatus.equals("ACCEPTED")){
+            } else if (RequestStatus.equals("ACCEPTED")) {
                 int choice = JOptionPane.showConfirmDialog(this,
                         "Voulez-vous Terminer la mission avec l'ID de requête: " + requestID + "\n"
                                 + "Description: " + description + "\n"
                                 + "Commentaire: " + comment,
                         "Confirmation d'acceptation de mission",
                         JOptionPane.YES_NO_OPTION);
-        
+    
                 if (choice == JOptionPane.YES_OPTION) {
                     InterfaceMySQL.requestFinished(((Integer) requestID).intValue());
                 }
             }
         }
-
     }
 
     private void refreshTableData() {
@@ -132,7 +165,7 @@ public class HelperInterface extends JPanel {
                     Date RequestDate = resultSet.getDate("RequestDate");
                     String Description = resultSet.getString("Description");
                     String Commentaire = resultSet.getString("Commentaire");
-                    if(requestStatus.equals("INPROGRESS") || requestStatus.equals("ACCEPTED")|| requestStatus.equals("COMPLETED")){
+                    if(requestStatus.equals("INPROGRESS")){
                         DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
                         Vector<Object> row = new Vector<>();
                         row.add(requestID);

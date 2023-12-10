@@ -36,6 +36,14 @@ public class CreateRequest extends JFrame {
         JButton createButton = new JButton("Create");
         JButton dropButton = new JButton("Drop");
 
+        descriptionTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                            // Déclenchez l'action du bouton "Login" lorsque la touche "Entrée" est pressée
+               createButton.doClick();
+             }
+          });
+
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

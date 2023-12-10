@@ -153,9 +153,9 @@ public class InterfaceMySQL {
         conn.close();
     }
 
-    public static void addCommentaire(int RequestID,String commentaire) throws SQLException{
+    public static void addCommentaire(int RequestID,String commentaire, String Status) throws SQLException{
         Connection conn = Connect();
-        String SQLCommand = "UPDATE Requests SET Commentaire = " + String.format("'%s'",commentaire) + ", RequestStatus = 'REJECTED' WHERE RequestsID = " + String.valueOf(RequestID);
+        String SQLCommand = "UPDATE Requests SET Commentaire = " + String.format("'%s'",commentaire) + ", RequestStatus = " + String.format("'%s'",Status) + "WHERE RequestsID = " + String.valueOf(RequestID);
         System.out.println(SQLCommand);
         Statement stm = conn.createStatement();
         stm.executeUpdate(SQLCommand);

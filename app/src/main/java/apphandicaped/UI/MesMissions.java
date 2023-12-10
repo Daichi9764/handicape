@@ -19,14 +19,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
-public class MissionInterface extends JPanel {
+public class MesMissions extends JPanel {
     private static JTable requestsTable;
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date now = new Date();
+    private int CurrentHelperID;
     private Timer timer;
     JLabel messageLabel = new JLabel("Double-cliquez sur la case ID de la mission pour l'accepter");
 
-    public MissionInterface() {
+    public MesMissions(int CurrentHelperID) {
+        this.CurrentHelperID = CurrentHelperID;
 
         String[] columnNames = {"RequestID", "Description", "Date", "State", "Comment"};
         DefaultTableModel tableModel = new DefaultTableModel(null, columnNames) {
@@ -42,26 +44,13 @@ public class MissionInterface extends JPanel {
 
         requestsTable.setRowHeight(40);
         setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
-        add(messageLabel, BorderLayout.SOUTH);
-        // Chargez les données depuis la base de données
-        JPanel disconnectPanel = new JPanel();
-        disconnectPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); // Aligner le bouton à droite
 
-        JButton disconnectButton = new JButton("Disconnect");
-        disconnectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SwingUtilities.getWindowAncestor(disconnectButton).setVisible(false);
-                MainInterface.main(null);
-                
-            }
-        });
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
+        centerPanel.add(messageLabel, BorderLayout.SOUTH);
 
-        disconnectPanel.add(disconnectButton);
-
-        // Ajouter le panneau à la partie inférieure (SOUTH) du BorderLayout
-        add(disconnectPanel, BorderLayout.SOUTH);
+        // Ajouter le panneau au centre (CENTER) du BorderLayout
+        add(centerPanel, BorderLayout.CENTER);
 
         loadTableData();
 
@@ -72,9 +61,12 @@ public class MissionInterface extends JPanel {
                 int row = requestsTable.rowAtPoint(e.getPoint());
                 int col = requestsTable.columnAtPoint(e.getPoint());
                 if (row >= 0 && col >= 0) {
+                    // Récupérez la valeur de la colonne RequestID
+                    Object requestID = requestsTable.getValueAt(row, 0);
+        
                     // Affichez une popup pour la cellule sélectionnée
                     try {
-                        showPopup(row, col);
+                        showPopup(row, col, requestID);
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
@@ -92,24 +84,25 @@ public class MissionInterface extends JPanel {
         timer.start();
     }
 
-    private void showPopup(int row, int col) throws SQLException {
+    private void showPopup(int row, int col, Object requestID) throws SQLException {
+        // Utilisez la valeur de la colonne RequestID dans votre logique
         if (col == 0) { // Vérifiez si la colonne est celle des IDs de requête
-            Object requestID = requestsTable.getValueAt(row, col);
             Object description = requestsTable.getValueAt(row, 1); // Colonne de description
             Object comment = requestsTable.getValueAt(row, 4); // Colonne de commentaire
+            Object RequestStatus = requestsTable.getValueAt(row, 3);
+            System.out.println("----------------> " + RequestStatus);
+
+            if (RequestStatus.equals("ACCEPTED")) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "Voulez-vous Terminer la mission avec l'ID de requête: " + requestID + "\n"
+                                + "Description: " + description + "\n"
+                                + "Commentaire: " + comment,
+                        "Confirmation d'acceptation de mission",
+                        JOptionPane.YES_NO_OPTION);
     
-            int choice = JOptionPane.showConfirmDialog(this,
-                    "Voulez-vous Valider la mission avec l'ID de requête: " + requestID + "\n"
-                            + "Description: " + description + "\n"
-                            + "Commentaire: " + comment,
-                    "Confirmation d'acceptation de mission",
-                    JOptionPane.YES_NO_OPTION);
-    
-            if (choice == JOptionPane.YES_OPTION) {
-                InterfaceMySQL.requestAcceptedbyWorker(((Integer) requestID).intValue());
-            }
-            else{
-                Commentaire.main(null, ((Integer) requestID).intValue(),"REJECTED");
+                if (choice == JOptionPane.YES_OPTION) {
+                    InterfaceMySQL.requestFinished(((Integer) requestID).intValue());
+                }
             }
         }
     }
@@ -125,7 +118,7 @@ public class MissionInterface extends JPanel {
     public void loadTableData() {
         try {
             Connection connection = InterfaceMySQL.Connect();
-            String query = "SELECT RequestsID, RequestStatus,RequestDate,Description,Commentaire FROM Requests";
+            String query = "SELECT RequestsID,DestinationID, RequestStatus,RequestDate,Description,Commentaire FROM Requests";
             try (PreparedStatement statement = connection.prepareStatement(query);
                  ResultSet resultSet = statement.executeQuery()) {
 
@@ -135,7 +128,8 @@ public class MissionInterface extends JPanel {
                     Date RequestDate = resultSet.getDate("RequestDate");
                     String Description = resultSet.getString("Description");
                     String Commentaire = resultSet.getString("Commentaire");
-                    if(requestStatus.equals("PENDING") || requestStatus.equals("REJECTED")){
+                    int DestinationID = resultSet.getInt("DestinationID");
+                    if((requestStatus.equals("ACCEPTED") || requestStatus.equals("COMPLETED"))&& DestinationID == CurrentHelperID){
                         DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
                         Vector<Object> row = new Vector<>();
                         row.add(requestID);
@@ -150,18 +144,19 @@ public class MissionInterface extends JPanel {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args,int HelperID) {
         SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Worker Interface");
+            JFrame frame = new JFrame("Mes Missions");
             frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
-            MissionInterface missionInterface = new MissionInterface();
+            MesMissions missionInterface = new MesMissions(HelperID);
             frame.add(missionInterface);
 
-            frame.setSize(800, 600);
+            frame.setSize(600, 400);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });

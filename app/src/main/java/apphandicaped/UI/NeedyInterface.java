@@ -47,7 +47,7 @@ public class NeedyInterface extends JPanel {
 
         // Chargez les données depuis la base de données
         loadTableData();
-
+        JPanel btnpanel = new JPanel();
         // Ajoutez le bouton "Create Mission" en bas du centre
         JButton createMissionButton = new JButton("Create Mission");
         createMissionButton.addActionListener(new ActionListener() {
@@ -56,8 +56,38 @@ public class NeedyInterface extends JPanel {
                CreateRequest.main(null,CurrentNeedyID);
             }
         });
+        JButton Disconnect = new JButton("Disconnect");
+        Disconnect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.getWindowAncestor(Disconnect).setVisible(false);
+                MainInterface.main(null);
+                
+            }
+        });
         add(createMissionButton, BorderLayout.SOUTH);
+        btnpanel.add(createMissionButton);
+        btnpanel.add(Disconnect);
+        add(btnpanel,BorderLayout.SOUTH);
 
+        requestsTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = requestsTable.rowAtPoint(e.getPoint());
+                int col = requestsTable.columnAtPoint(e.getPoint());
+                if (row >= 0 && col >= 0) {
+                    // Récupérez la valeur de la colonne RequestID
+                    Object requestID = requestsTable.getValueAt(row, 0);
+        
+                    // Affichez une popup pour la cellule sélectionnée
+                    try {
+                        showPopup(row, col, requestID);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
         // Initialisez le Timer pour rafraîchir toutes les 3 secondes
         Timer timer = new Timer(3000, new ActionListener() {
             @Override
@@ -68,10 +98,31 @@ public class NeedyInterface extends JPanel {
         timer.start();
     }
 
+    private void showPopup(int row, int col, Object requestID) throws SQLException {
+        // Utilisez la valeur de la colonne RequestID dans votre logique
+        if (col == 0) { // Vérifiez si la colonne est celle des IDs de requête
+            Object description = requestsTable.getValueAt(row, 1); // Colonne de description
+            Object comment = requestsTable.getValueAt(row, 4); // Colonne de commentaire
+            Object RequestStatus = requestsTable.getValueAt(row, 3);
+            System.out.println("----------------> " + RequestStatus);
+            if (RequestStatus.equals("COMPLETED")) {
+                int choice = JOptionPane.showConfirmDialog(this,
+                        "Voulez-vous Donner un commentaire la mission avec l'ID de requête: " + requestID + "\n"
+                                + "Description: " + description + "\n",
+                        "Confirmation d'acceptation de mission",
+                        JOptionPane.YES_NO_OPTION);
+    
+                if (choice == JOptionPane.YES_OPTION) {
+                    Commentaire.main(null, ((Integer) requestID).intValue(),"COMPLETED");
+                }
+            } 
+        }
+    }
+
     public void loadTableData() {
         try {
             Connection connection = InterfaceMySQL.Connect();
-            String query = "SELECT RequestsID, RequestStatus, RequestDate, Description, Commentaire FROM Requests";
+            String query = "SELECT RequestsID,OriginID, RequestStatus, RequestDate, Description, Commentaire FROM Requests";
             try (PreparedStatement statement = connection.prepareStatement(query);
                  ResultSet resultSet = statement.executeQuery()) {
 
@@ -81,15 +132,20 @@ public class NeedyInterface extends JPanel {
                     java.sql.Date RequestDate = resultSet.getDate("RequestDate");
                     String Description = resultSet.getString("Description");
                     String Commentaire = resultSet.getString("Commentaire");
+                    int OriginID = resultSet.getInt("OriginID");
+                    if(OriginID == CurrentNeedyID){
 
-                    DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
-                    Vector<Object> row = new Vector<>();                        row.add(requestID);
-                    row.add(Description);
-                    row.add(RequestDate);
-                    row.add(requestStatus);
-                    if(requestStatus.equals("INPROGRESS")) row.add("Requete Valide");
-                    else row.add("Pas de Commentaire");
-                    model.addRow(row);
+                        DefaultTableModel model = (DefaultTableModel) requestsTable.getModel();
+                        Vector<Object> row = new Vector<>();                        
+                        row.add(requestID);
+                        row.add(Description);
+                        row.add(RequestDate);
+                        row.add(requestStatus);
+                        if(requestStatus.equals("INPROGRESS")) row.add("Requete Valide");
+                        else row.add(Commentaire);
+                        model.addRow(row);
+                    }
+
 
 
                 }
@@ -114,7 +170,6 @@ public class NeedyInterface extends JPanel {
 
             NeedyInterface needyInterface = new NeedyInterface(NeedyID);
             frame.add(needyInterface);
-
             frame.setSize(800, 600);
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);

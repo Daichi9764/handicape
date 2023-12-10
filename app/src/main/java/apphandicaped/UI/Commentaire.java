@@ -12,7 +12,7 @@ public class Commentaire extends JFrame {
 
     private JTextField descriptionTextField;
 
-    public Commentaire(int requestID) {
+    public Commentaire(int requestID,String Status) {
         setTitle("Commentaire");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,6 +25,7 @@ public class Commentaire extends JFrame {
         descriptionTextField = new JTextField();
         mainPanel.add(descriptionTextField);
 
+
         // Bouton "Ok"
         JButton okButton = new JButton("Ok");
         okButton.addActionListener(new ActionListener() {
@@ -32,7 +33,7 @@ public class Commentaire extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String description = descriptionTextField.getText();
                 try {
-                    InterfaceMySQL.addCommentaire(requestID, description);
+                    InterfaceMySQL.addCommentaire(requestID, description, Status);
                 } catch (SQLException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
@@ -40,6 +41,13 @@ public class Commentaire extends JFrame {
                 dispose();
             }
         });
+        descriptionTextField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                            // Déclenchez l'action du bouton "Login" lorsque la touche "Entrée" est pressée
+               okButton.doClick();
+             }
+          });
         mainPanel.add(okButton);
 
         // Ajout du panel principal à la fenêtre
@@ -48,9 +56,9 @@ public class Commentaire extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static void main(String[] args, int RequestID) {
+    public static void main(String[] args, int RequestID,String Status) {
         SwingUtilities.invokeLater(() -> {
-            Commentaire miniInterface = new Commentaire(RequestID);
+            Commentaire miniInterface = new Commentaire(RequestID,Status);
             miniInterface.setVisible(true);
         });
     }
